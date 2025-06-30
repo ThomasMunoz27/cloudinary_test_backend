@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Category extends Base{
+
     @Column(nullable = false, unique = true)
     private String name;
 

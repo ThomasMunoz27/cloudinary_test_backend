@@ -17,10 +17,20 @@ public class Image extends Base {
     private String link;
     @Column(name = "nombre")
     private String name;
+    @Column(name = "descripcion")
+    private String description;
+
+    @Column(name = "likes", nullable = false)
+    private Integer likes = 0;
+    @Column(name = "dislikes", nullable = false)
+    private Integer dislike = 0;
 
     @Column(name = "fecha_subida")
-    //private User user
-    private LocalDateTime dateUploaded = LocalDateTime.now();
+    private LocalDateTime dateUploaded;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

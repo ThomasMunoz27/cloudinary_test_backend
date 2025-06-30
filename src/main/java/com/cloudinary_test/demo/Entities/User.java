@@ -3,6 +3,7 @@ package com.cloudinary_test.demo.Entities;
 import com.cloudinary_test.demo.Entities.Enums.Privileges;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,5 +27,5 @@ public class User extends Base{
     private LocalDateTime registerDate;
 
     @Column(name="privilegios")
-    private Privileges privileges;
+    private Privileges privileges; //admin o usuario
 }

@@ -12,20 +12,14 @@ public class Comment extends Base{
     @Column(name="contenido", nullable = false)
     private String content;
 
-    @Column(name="user_id", nullable = false)
-    private Long user_id;
-
-    @Column(name="image_id", nullable = false)
-    private Long image_id;
-
     @Column(name="fecha", nullable = false)
     private LocalDateTime date = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "image_id")
+    @JoinColumn(name = "image_id", nullable = false)
     private Image image;
 }

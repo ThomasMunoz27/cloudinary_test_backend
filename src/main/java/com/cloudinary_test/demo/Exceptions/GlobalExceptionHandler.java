@@ -32,6 +32,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(msg));
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeExcepcion(RuntimeException exception){
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("Ocurrio un error inesperado: " + exception.getMessage()));
+    }
+
 
 
     @ExceptionHandler(Exception.class)

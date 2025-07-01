@@ -15,6 +15,10 @@ public class Image extends Base {
 
     @Column(nullable = false)
     private String link;
+
+    @Column(name = "public_id")
+    private String public_id;
+
     @Column(name = "nombre")
     private String name;
     @Column(name = "descripcion")

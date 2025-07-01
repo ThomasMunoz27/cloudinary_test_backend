@@ -39,7 +39,7 @@ public class BaseController<E> {
 
     @PutMapping("/{id}")
     public ResponseEntity<E> update(@PathVariable Long id, @RequestBody E entity){
-            E entityUpdated = baseService.update(id, entity);
+        E entityUpdated = baseService.update(id, entity);
             return ResponseEntity.ok(entityUpdated);
     }
 

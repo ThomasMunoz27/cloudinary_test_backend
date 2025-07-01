@@ -1,13 +1,17 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Repositories.ImageRepository;
+import com.cloudinary_test.demo.Services.CloudinaryService;
 import com.cloudinary_test.demo.Services.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,8 +20,11 @@ import java.util.List;
 @RequestMapping("/images")
 @CrossOrigin(origins ="*")
 public class ImageController extends BaseController<Image>{
-    public ImageController(ImageService imageService){
+
+    private final CloudinaryService cloudinaryService;
+    public ImageController(ImageService imageService, CloudinaryService cloudinaryService){
         super(imageService);
+        this.cloudinaryService = cloudinaryService;
     }
     @Override
     @GetMapping
@@ -54,4 +61,10 @@ public class ImageController extends BaseController<Image>{
         return super.delete(id);
     }
 
+
+    @PostMapping("/upload")
+    public ResponseEntity<Image> upload(@ModelAttribute ImageUploadRequest request) throws IOException {
+        Image image = ((ImageService)baseService).uploadImage(request);
+        return ResponseEntity.ok(image);
+    }
 }

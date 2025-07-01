@@ -34,9 +34,9 @@ public class Image extends Base {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private Category category;
+    private Long categoryId;
 }

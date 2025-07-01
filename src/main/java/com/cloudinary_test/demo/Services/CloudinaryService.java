@@ -2,6 +2,7 @@ package com.cloudinary_test.demo.Services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.cloudinary_test.demo.Exceptions.CloudinaryUploadException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +18,13 @@ public class CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public Map uploadImage(MultipartFile file) throws IOException{
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-        return uploadResult;
+    public Map uploadImage(MultipartFile file) {
+        try {
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            return uploadResult;
+        }catch (IOException e){
+            throw new CloudinaryUploadException("Falló la subida a cloudinary", e);
+        }
+
     }
 }

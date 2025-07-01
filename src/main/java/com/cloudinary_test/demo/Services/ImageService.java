@@ -36,7 +36,7 @@ public class ImageService extends BaseService<Image> {
         this.categoryRepository = categoryRepository;
     }
     @Transactional
-    public Image uploadImage(ImageUploadRequest request)throws IOException{
+    public Image uploadImage(ImageUploadRequest request){
         Map uploadResult = cloudinaryService.uploadImage(request.getFile());
         String imageUrl = uploadResult.get("secure_url").toString();
         String publicId = uploadResult.get("public_id").toString();
@@ -56,8 +56,8 @@ public class ImageService extends BaseService<Image> {
                 .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
 
 
-        image.setUserId(request.getUserId());
-        image.setCategoryId(request.getCategoryId());
+        image.setUserId(user);
+        image.setCategoryId(category);
 
         return imageRepository.save(image);
 

@@ -63,7 +63,7 @@ public class ImageController extends BaseController<Image>{
 
 
     @PostMapping("/upload")
-    public ResponseEntity<Image> upload(@ModelAttribute ImageUploadRequest request) throws IOException {
+    public ResponseEntity<Image> upload(@ModelAttribute ImageUploadRequest request) {
         Image image = ((ImageService)baseService).uploadImage(request);
         return ResponseEntity.ok(image);
     }

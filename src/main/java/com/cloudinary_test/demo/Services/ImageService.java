@@ -102,4 +102,17 @@ public class ImageService extends BaseService<Image> {
         }
         return imageRepository.save(image);
     }
+
+
+    @Transactional
+    public void deleteImage(Long id){
+        Image image = imageRepository.findById(id)
+                .orElseThrow(() ->new EntityNotFoundException("Imagen no  encontrada para eliminar"));
+
+        //Eliminar de cloudinary
+        if (image.getPublicId() != null){
+            cloudinaryService.deleteImage(image.getPublicId());
+        }
+        imageRepository.deleteById(id);
+    }
 }

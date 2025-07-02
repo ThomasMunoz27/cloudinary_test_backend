@@ -59,7 +59,8 @@ public class ImageController extends BaseController<Image>{
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar imagen")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        return super.delete(id);
+        ((ImageService)baseService).deleteImage(id);
+        return ResponseEntity.noContent().build();
     }
 
 

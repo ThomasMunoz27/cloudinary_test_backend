@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -52,12 +53,15 @@ public class ImageService extends BaseService<Image> {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
+
+       List<Category> categories = categoryRepository.findAllById(request.getCategoryId());
+       if (categories.isEmpty()){
+           throw new EntityNotFoundException("No se encotraron categorias válidas");
+       }
 
 
         image.setUserId(user);
-        image.setCategoryId(category);
+        image.setCategories(categories);
 
         return imageRepository.save(image);
 

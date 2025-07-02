@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "images")
@@ -36,7 +37,10 @@ public class Image extends Base {
     @JoinColumn(name = "user_id")
     private User userId;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category categoryId;
+    @ManyToMany
+    @JoinTable(
+            name = "image_categories",
+            joinColumns = @JoinColumn(name = "image_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
 }

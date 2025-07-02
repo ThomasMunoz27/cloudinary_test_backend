@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Services;
 
+import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
 import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
 import com.cloudinary_test.demo.Entities.Category;
 import com.cloudinary_test.demo.Entities.Image;
@@ -44,7 +45,7 @@ public class ImageService extends BaseService<Image> {
         Image image = new Image();
 
         image.setLink(imageUrl);
-        image.setPublic_id(publicId);
+        image.setPublicId(publicId);
         image.setName(request.getName());
         image.setDescription(request.getDescription());
         image.setDateUploaded(LocalDateTime.now());
@@ -65,5 +66,40 @@ public class ImageService extends BaseService<Image> {
 
         return imageRepository.save(image);
 
+    }
+
+    @Transactional
+    public Image updateImage(Long id, ImageUpdateRequest request){
+        Image image = imageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Imagen no encontrada para editar"));
+        //si existen valores los reemplaza
+        if (request.getName() != null){
+            image.setName(request.getName());
+        }
+
+        if (request.getDescription() != null){
+            image.setDescription(request.getDescription());
+        }
+
+        //Si viene un archivo, reemplazo la imagen en Cloudinary
+        if(request.getFile() != null && !request.getFile().isEmpty()){
+            Map uploadResult = null;
+            //se elimina la imagen anterior
+            if (image.getPublicId() != null){
+                uploadResult = cloudinaryService.updateImage(image.getPublicId(), request.getFile());
+            }
+            image.setLink(uploadResult.get("secure_url").toString());
+            image.setPublicId(uploadResult.get("public_id").toString());
+        }
+
+        //Si se envian nuevas  categorias
+        if (request.getCategoryIds() != null && !request.getCategoryIds().isEmpty()){
+            List<Category> categories = categoryRepository.findAllById(request.getCategoryIds());
+            if (categories.isEmpty()){
+                throw new EntityNotFoundException("No se encontraron categorias validas");
+            }
+            image.setCategories(categories);
+        }
+        return imageRepository.save(image);
     }
 }

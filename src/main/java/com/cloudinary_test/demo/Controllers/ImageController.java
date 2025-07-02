@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
 import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Repositories.ImageRepository;
@@ -66,5 +67,11 @@ public class ImageController extends BaseController<Image>{
     public ResponseEntity<Image> upload(@ModelAttribute ImageUploadRequest request) {
         Image image = ((ImageService)baseService).uploadImage(request);
         return ResponseEntity.ok(image);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Image> updateImage(@PathVariable Long id, @ModelAttribute ImageUpdateRequest request){
+        Image updatedImage = ((ImageService)baseService).updateImage(id, request);
+        return ResponseEntity.ok(updatedImage);
     }
 }

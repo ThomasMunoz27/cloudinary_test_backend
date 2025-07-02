@@ -18,7 +18,7 @@ public class Image extends Base {
     private String link;
 
     @Column(name = "public_id")
-    private String public_id;
+    private String publicId;
 
     @Column(name = "nombre")
     private String name;

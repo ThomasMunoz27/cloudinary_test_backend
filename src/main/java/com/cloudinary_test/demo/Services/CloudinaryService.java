@@ -27,4 +27,16 @@ public class CloudinaryService {
         }
 
     }
+
+    public Map updateImage(String publicId, MultipartFile file){
+        try{
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+
+            return uploadImage(file);
+        }catch (IOException e){
+            throw new CloudinaryUploadException("Falló Actualizar imagen", e);
+        }
+
+
+    }
 }

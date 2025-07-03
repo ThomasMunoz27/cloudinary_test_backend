@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.CommentPostRequest;
 import com.cloudinary_test.demo.Entities.Comment;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Services.CommentService;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Comments", description = "Crud de comentarios")
@@ -36,6 +38,7 @@ public class CommentController extends BaseController<Comment> {
     @PostMapping
     @Operation(summary = "Crear nuevo comentario")
     public ResponseEntity<Comment> post(@RequestBody Comment comment) {
+        comment.setDate(LocalDateTime.now());
         return super.post(comment);
     }
 
@@ -53,4 +56,10 @@ public class CommentController extends BaseController<Comment> {
         return super.delete(id);
     }
 
+
+    @PostMapping("/post")
+    public ResponseEntity<Comment> postComment(@RequestBody CommentPostRequest request){
+        Comment newComment = ((CommentService)baseService).saveComment(request);
+        return ResponseEntity.ok(newComment);
+    }
 }

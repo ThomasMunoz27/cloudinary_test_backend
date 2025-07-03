@@ -11,6 +11,8 @@ import com.cloudinary_test.demo.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -114,5 +116,17 @@ public class ImageService extends BaseService<Image> {
             cloudinaryService.deleteImage(image.getPublicId());
         }
         imageRepository.deleteById(id);
+    }
+
+
+    public Page<Image> findAllPaged(Pageable pageable){
+        return imageRepository.findAll(pageable);
+    }
+
+    public Page<Image> findPagedAndFiltered(Long categoryId, Pageable pageable){
+        if (categoryId != null){
+            return imageRepository.findByCategoryId(categoryId, pageable);
+        }
+        return imageRepository.findAll(pageable);
     }
 }

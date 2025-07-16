@@ -21,6 +21,4 @@ public class Category extends Base{
     @Column
     private String description;
 
-    @ManyToMany
-    private List<Image> images = new ArrayList<>();
 }

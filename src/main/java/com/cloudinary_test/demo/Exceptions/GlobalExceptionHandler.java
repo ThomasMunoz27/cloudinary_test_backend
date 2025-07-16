@@ -1,11 +1,13 @@
 package com.cloudinary_test.demo.Exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.IOException;
 
@@ -63,6 +65,19 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("Error al subir la imagen " + exception.getMessage()));
     }
 
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidDataAcccesApiUsageException(InvalidDataAccessApiUsageException ex){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Acceso a datos inválido: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceedEception (MaxUploadSizeExceededException ex){
+        return ResponseEntity
+                .status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(new ErrorResponse("La imagen excede el tamaño máximo permitido(10MB)."));
+    }
     public record ErrorResponse(String error) {
 
     }

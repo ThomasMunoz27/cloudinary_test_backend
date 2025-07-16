@@ -34,4 +34,11 @@ public class AuthService {
 
         return userRepository.save(user);
     }
+
+    public User authenticate(String email, String password){
+        
+        return userRepository.findByEmail(email)
+                .filter(user -> user.getPassword().equals(password)) // ⚠️ luego usá password hash
+                .orElseThrow(() -> new IllegalArgumentException("Credenciales inválidas"));
+    }
 }

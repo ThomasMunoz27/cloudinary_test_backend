@@ -8,5 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ImageRepository extends BaseRepository<Image, Long> {
-    Page<Image> findByCategoryId(Long categoryId, Pageable pageable);
+    @Query("""
+            SELECT DISTINCT i FROM Image i
+            JOIN i.categories c
+            WHERE (:categoryId is NUll OR c.id = :categoryId)
+            """)
+    Page<Image> findByCategoryId(@Param("categoryId")Long categoryId, Pageable pageable);
 }

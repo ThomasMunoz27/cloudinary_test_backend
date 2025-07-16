@@ -12,6 +12,8 @@ import java.util.List;
 @Tag(name = "Categories", description = "Crud de categorias")
 @RestController
 @RequestMapping("/categories")
+@CrossOrigin(origins ="*")
+
 public class CategoryController extends BaseController<Category> {
 
     public CategoryController(CategoryService categoryService){

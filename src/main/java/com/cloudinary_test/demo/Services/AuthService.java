@@ -4,6 +4,8 @@ import com.cloudinary_test.demo.DTOs.RegisterRequest;
 import com.cloudinary_test.demo.Entities.Enums.Privileges;
 import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Repositories.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,9 +13,12 @@ import java.time.LocalDateTime;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository){
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User register(RegisterRequest request) {
@@ -28,17 +33,12 @@ public class AuthService {
 
         user.setEmail(request.getEmail());
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword()); //despues hay que hashearla
+        user.setPassword(passwordEncoder.encode(request.getPassword())); //hasheada
         user.setRegisterDate(LocalDateTime.now());
         user.setPrivileges(Privileges.USER);
 
         return userRepository.save(user);
     }
 
-    public User authenticate(String email, String password){
-        
-        return userRepository.findByEmail(email)
-                .filter(user -> user.getPassword().equals(password)) // ⚠️ luego usá password hash
-                .orElseThrow(() -> new IllegalArgumentException("Credenciales inválidas"));
-    }
+
 }

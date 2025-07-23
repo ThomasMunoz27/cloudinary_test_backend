@@ -36,9 +36,12 @@ public class ReactionService extends BaseService<Reaction> {
 
             if (reaction.getType() == type){
                 //Ya reaccionó con ese tipo -> deshacer reacción
+                removeReactionCount(image, type);
                 reactionRespository.delete(reaction);
             }else{
-                //cambiar tipo de reaccion
+                //cambiar tipo de reaccion -> actualizar conteos
+                removeReactionCount(image, reaction.getType());
+                addReactionCount(image, type);
                 reaction.setType(type);
                 reactionRespository.save(reaction);
             }
@@ -49,6 +52,23 @@ public class ReactionService extends BaseService<Reaction> {
             newReaction.setImage(image);
             newReaction.setType(type);
             reactionRespository.save(newReaction);
+
+            addReactionCount(image, type);
+        }
+        imageService.save(image);
+    }
+
+    private void addReactionCount(Image image, ReactionType type){
+        switch (type){
+            case LIKE -> image.setLikes(image.getLikes() + 1);
+            case DISKLIKE -> image.setDislike(image.getDislike() + 1);
+        }
+    }
+
+    private void removeReactionCount(Image image, ReactionType type){
+        switch (type){
+            case LIKE -> image.setLikes(Math.max(image.getLikes() - 1, 0));
+            case DISKLIKE -> image.setDislike(Math.max(image.getDislike() - 1, 0));
         }
     }
 }

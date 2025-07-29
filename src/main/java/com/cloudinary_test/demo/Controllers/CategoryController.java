@@ -12,7 +12,7 @@ import java.util.List;
 @Tag(name = "Categories", description = "Crud de categorias")
 @RestController
 @RequestMapping("/categories")
-@CrossOrigin(origins ="*")
+//@CrossOrigin(origins ="*")
 
 public class CategoryController extends BaseController<Category> {
 

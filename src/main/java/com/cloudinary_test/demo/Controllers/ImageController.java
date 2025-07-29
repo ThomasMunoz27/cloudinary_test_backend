@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Images", description = "Crud de imagenes")
 @RestController
 @RequestMapping("/images")
-@CrossOrigin(origins ="*")
+//@CrossOrigin(origins ="*")
 public class ImageController extends BaseController<Image>{
 
     private final ImageService imageService;

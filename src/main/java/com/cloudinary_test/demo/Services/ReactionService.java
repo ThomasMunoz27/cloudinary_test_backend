@@ -9,9 +9,11 @@ import com.cloudinary_test.demo.Repositories.ImageRepository;
 import com.cloudinary_test.demo.Repositories.ReactionRespository;
 import com.cloudinary_test.demo.Repositories.UserRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ReactionService extends BaseService<Reaction> {
 
     private final ReactionRespository reactionRespository;
@@ -24,6 +26,11 @@ public class ReactionService extends BaseService<Reaction> {
         super(baseRepository);
         this.reactionRespository = reactionRespository;
         this.imageService = imageService;
+    }
+
+    public Optional<Reaction> searchReaction(Long imageId, Long userId){
+        return reactionRespository.findByUserIdAndImageId(userId, imageId);
+
     }
 
     public void reactToImage(Long imageId, User user, ReactionType type){

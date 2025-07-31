@@ -78,4 +78,23 @@ public class ReactionService extends BaseService<Reaction> {
             case DISKLIKE -> image.setDislike(Math.max(image.getDislike() - 1, 0));
         }
     }
+
+    public Optional<Reaction> getReactionByUserAndImage(Long userId, Long imageId){
+        return reactionRespository.findByUserIdAndImageId(userId, imageId);
+    }
+
+    public int countReactionByType(Long imageId, ReactionType type){
+        Image imageReacted = imageService.findById(imageId);
+        switch (type){
+            case LIKE -> {
+                return imageReacted.getLikes();
+            }
+            case DISKLIKE -> {
+                return imageReacted.getDislike();
+            }
+            default -> {
+                return 0;
+            }
+        }
+    }
 }

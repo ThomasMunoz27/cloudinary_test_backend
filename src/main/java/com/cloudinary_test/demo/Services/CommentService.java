@@ -1,6 +1,7 @@
 package com.cloudinary_test.demo.Services;
 
 import com.cloudinary_test.demo.DTOs.CommentPostRequest;
+import com.cloudinary_test.demo.DTOs.CommentDTOResponse;
 import com.cloudinary_test.demo.Entities.Comment;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CommentService extends BaseService<Comment> {
@@ -33,20 +35,35 @@ public class CommentService extends BaseService<Comment> {
 
 
     @Transactional
-    public Comment saveComment(CommentPostRequest request){
+    public Comment saveComment(CommentPostRequest request, User user){
         Comment comment = new Comment();
 
         comment.setContent(request.getContent());
         comment.setDate(LocalDateTime.now());
 
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado"));
+
         Image image = imageRepository.findById(request.getImageId())
-                .orElseThrow(()-> new EntityNotFoundException("Image noencontrada para comentar"));
+                .orElseThrow(()-> new EntityNotFoundException("Image no encontrada para comentar"));
 
         comment.setUser(user);
         comment.setImage(image);
 
         return commentRepository.save(comment);
+    }
+
+    public List<CommentDTOResponse> getCommentsByImageId(Long imageId) {
+        System.out.println("Obteniendo comentarios de imagen: " + imageId);
+
+        List<Comment> comments = commentRepository.findAllByImageId(imageId);
+        System.out.println("Comentarios encontrados: " + comments.size());
+
+        return comments.stream()
+                .map(comment -> new CommentDTOResponse(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getUser().getUsername(),
+                        comment.getDate()
+                ))
+                .toList();
     }
 }

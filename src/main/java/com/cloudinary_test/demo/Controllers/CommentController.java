@@ -1,12 +1,17 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.CommentDTOResponse;
 import com.cloudinary_test.demo.DTOs.CommentPostRequest;
 import com.cloudinary_test.demo.Entities.Comment;
-import com.cloudinary_test.demo.Entities.Image;
+
+import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Services.CommentService;
+
+import com.cloudinary_test.demo.Utils.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -16,8 +21,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/comments")
 public class CommentController extends BaseController<Comment> {
-    public CommentController(CommentService commentService){
+
+    private final CommentService commentService;
+    public CommentController(CommentService commentService, CommentService commentService1){
         super(commentService);
+        this.commentService = commentService1;
     }
 
     @Override
@@ -58,8 +66,19 @@ public class CommentController extends BaseController<Comment> {
 
 
     @PostMapping("/post")
-    public ResponseEntity<Comment> postComment(@RequestBody CommentPostRequest request){
-        Comment newComment = ((CommentService)baseService).saveComment(request);
+    public ResponseEntity<Comment> postComment(@RequestBody CommentPostRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        User user = userDetails.getUser();
+
+        Comment newComment = ((CommentService)baseService).saveComment(request, user);
         return ResponseEntity.ok(newComment);
+    }
+
+    @GetMapping("/image/{imageId}")
+    public ResponseEntity<List<CommentDTOResponse>> getCommentsByImageId(@PathVariable Long imageId){
+        System.out.println("Buscando comentarios para imagen ID: " + imageId);
+
+        List<CommentDTOResponse> comentDTOs = commentService.getCommentsByImageId(imageId);
+        return ResponseEntity.ok(comentDTOs);
     }
 }

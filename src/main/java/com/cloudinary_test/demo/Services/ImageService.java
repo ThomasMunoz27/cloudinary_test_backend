@@ -40,7 +40,7 @@ public class ImageService extends BaseService<Image> {
         this.categoryRepository = categoryRepository;
     }
     @Transactional
-    public Image uploadImage(ImageUploadRequest request){
+    public Image uploadImage(ImageUploadRequest request, Long userId){
         Map uploadResult = cloudinaryService.uploadImage(request.getFile());
         String imageUrl = uploadResult.get("secure_url").toString();
         String publicId = uploadResult.get("public_id").toString();
@@ -54,7 +54,7 @@ public class ImageService extends BaseService<Image> {
         image.setLikes(0);
         image.setDislike(0);
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
        List<Category> categories = categoryRepository.findAllById(request.getCategoryId());

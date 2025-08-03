@@ -10,6 +10,6 @@ public class ImageUploadRequest {
     private MultipartFile file;
     private String name;
     private String description;
-    private Long userId;
+    //private Long userId;
     private List<Long> categoryId;
 }

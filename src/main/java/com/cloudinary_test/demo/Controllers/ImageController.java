@@ -3,9 +3,11 @@ package com.cloudinary_test.demo.Controllers;
 import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
 import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
 import com.cloudinary_test.demo.Entities.Image;
+import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Repositories.ImageRepository;
 import com.cloudinary_test.demo.Services.CloudinaryService;
 import com.cloudinary_test.demo.Services.ImageService;
+import com.cloudinary_test.demo.Utils.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,8 +74,9 @@ public class ImageController extends BaseController<Image>{
 
 
     @PostMapping("/upload")
-    public ResponseEntity<Image> upload(@ModelAttribute ImageUploadRequest request) {
-        Image image = imageService.uploadImage(request);
+    public ResponseEntity<Image> upload(@ModelAttribute ImageUploadRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUser().getId();
+        Image image = imageService.uploadImage(request, userId);
         return ResponseEntity.ok(image);
     }
 

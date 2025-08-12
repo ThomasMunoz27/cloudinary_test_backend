@@ -36,6 +36,8 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword())); //hasheada
         user.setRegisterDate(LocalDateTime.now());
         user.setPrivileges(Privileges.USER);
+        user.setLinkProfileImg("");
+        user.setPublicIdProfileImage("");
 
         return userRepository.save(user);
     }

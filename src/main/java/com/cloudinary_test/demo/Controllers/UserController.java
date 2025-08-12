@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.UserDTOResponse;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Services.UserService;
@@ -14,8 +15,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController extends BaseController<User>{
+
+    private final UserService userService;
     public UserController(UserService userService){
         super(userService);
+        this.userService = userService;
     }
 
     @Override
@@ -53,4 +57,9 @@ public class UserController extends BaseController<User>{
         return super.delete(id);
     }
 
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<UserDTOResponse> getUserProfileById(@PathVariable Long id){
+        UserDTOResponse dtoUser = userService.getProfileById(id);
+        return ResponseEntity.ok(dtoUser);
+    }
 }

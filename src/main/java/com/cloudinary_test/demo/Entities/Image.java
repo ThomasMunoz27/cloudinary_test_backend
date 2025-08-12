@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Image extends Base {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User userId;
 
     @ManyToMany

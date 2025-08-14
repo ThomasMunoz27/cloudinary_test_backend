@@ -3,7 +3,6 @@ package com.cloudinary_test.demo.Repositories;
 import com.cloudinary_test.demo.Entities.Image;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,4 +13,7 @@ public interface ImageRepository extends BaseRepository<Image, Long> {
             WHERE (:categoryId is NUll OR c.id = :categoryId)
             """)
     Page<Image> findByCategoryId(@Param("categoryId")Long categoryId, Pageable pageable);
+
+    @Query("SELECT i FROM Image i WHERE i.userId.id = :userId")
+    Page<Image> findByUserId(@Param("userId") Long userId, Pageable pageable);
 }

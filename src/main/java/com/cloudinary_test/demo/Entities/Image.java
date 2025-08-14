@@ -36,7 +36,6 @@ public class Image extends Base {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User userId;
 
     @ManyToMany

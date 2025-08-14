@@ -61,6 +61,7 @@ public class CommentService extends BaseService<Comment> {
                 .map(comment -> new CommentDTOResponse(
                         comment.getId(),
                         comment.getContent(),
+                        comment.getUser().getId(),
                         comment.getUser().getUsername(),
                         comment.getDate()
                 ))

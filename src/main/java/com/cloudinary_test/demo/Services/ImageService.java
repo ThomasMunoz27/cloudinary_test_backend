@@ -1,13 +1,16 @@
 package com.cloudinary_test.demo.Services;
 
+import com.cloudinary_test.demo.DTOs.ImagePageDTO;
 import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
 import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
+import com.cloudinary_test.demo.DTOs.UserForImageDTO;
 import com.cloudinary_test.demo.Entities.Category;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Repositories.CategoryRepository;
 import com.cloudinary_test.demo.Repositories.ImageRepository;
 import com.cloudinary_test.demo.Repositories.UserRepository;
+import com.cloudinary_test.demo.mappers.ImageMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +30,20 @@ public class ImageService extends BaseService<Image> {
     private final CloudinaryService cloudinaryService;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageMapper imageMapper;
 
     public ImageService(JpaRepository<Image, Long> baseRepository,
                         ImageRepository imageRepository,
                         CloudinaryService cloudinaryService,
                         UserRepository userRepository,
-                        CategoryRepository categoryRepository){
+                        CategoryRepository categoryRepository,
+                        ImageMapper imageMapper){
         super(baseRepository);
         this.imageRepository = imageRepository;
         this.cloudinaryService = cloudinaryService;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.imageMapper = imageMapper;
     }
     @Transactional
     public Image uploadImage(ImageUploadRequest request, Long userId){
@@ -119,14 +125,45 @@ public class ImageService extends BaseService<Image> {
     }
 
 
-    public Page<Image> findAllPaged(Pageable pageable){
-        return imageRepository.findAll(pageable);
+    public Page<ImagePageDTO> findAllPaged(Pageable pageable){
+        Page<Image> images;
+
+        images = imageRepository.findAll(pageable);
+
+        //mapeo de image ->ImagePageDto
+        return images.map(imageMapper::toImagePageDTO);
     }
 
-    public Page<Image> findPagedAndFiltered(Long categoryId, Pageable pageable){
+    public Page<ImagePageDTO> findPagedAndFiltered(Long categoryId, Pageable pageable){
+        Page<Image> images;
         if (categoryId != null){
-            return imageRepository.findByCategoryId(categoryId, pageable);
+            images = imageRepository.findByCategoryId(categoryId, pageable);
+        }else{
+            images = imageRepository.findAll(pageable);
         }
-        return imageRepository.findAll(pageable);
+
+        //mapeo de image ->ImagePageDto
+        return images.map(image -> {
+            ImagePageDTO imgDto = new ImagePageDTO();
+            imgDto.setId(image.getId());
+            imgDto.setPublicId(image.getPublicId());
+            imgDto.setLink(image.getLink());
+            imgDto.setName(image.getName());
+            imgDto.setDescription(image.getDescription());
+            imgDto.setLikes(image.getLikes());
+            imgDto.setDislike(image.getDislike());
+            imgDto.setDateUpload(image.getDateUploaded());
+
+
+            UserForImageDTO userDto = new UserForImageDTO();
+            userDto.setId(image.getUserId().getId());
+            userDto.setUsername(image.getUserId().getUsername());
+            userDto.setLinkProfileImg(image.getUserId().getLinkProfileImg());
+
+            imgDto.setUserId(userDto);
+            imgDto.setCategories(image.getCategories());
+
+            return imgDto;
+        });
     }
 }

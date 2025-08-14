@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.ImagePageDTO;
 import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
 import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
 import com.cloudinary_test.demo.Entities.Image;
@@ -88,7 +89,7 @@ public class ImageController extends BaseController<Image>{
 
     //Obtener imagenes por categoria,  por  default trae todas
     @GetMapping("/paged")
-    public Page<Image> getPagedImages(
+    public Page<ImagePageDTO> getPagedImages(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long categoryId,

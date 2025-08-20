@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.ChangeUserProfileDTO;
 import com.cloudinary_test.demo.DTOs.ImageForUserDTO;
 import com.cloudinary_test.demo.DTOs.ImagePageDTO;
 import com.cloudinary_test.demo.DTOs.UserDTOResponse;
@@ -103,6 +104,22 @@ public class UserController extends BaseController<User>{
 
         return userService.getPagedImagesByUser(userId, pageable);
 
+
+    }
+
+    @PutMapping("/profile/photo")
+    public ResponseEntity<UserDTOResponse> putPhotoProfileImage(@ModelAttribute ChangeUserProfileDTO imageRequest, @AuthenticationPrincipal CustomUserDetails userDetails){
+        User updatedUser = userService.updateProfilePhoto(userDetails.getUser(), imageRequest.getFile());
+
+        // Convertir a DTO de respuesta
+        UserDTOResponse dto = new UserDTOResponse();
+        dto.setId(updatedUser.getId());
+        dto.setUsername(updatedUser.getUsername());
+        dto.setRegisterDate(updatedUser.getRegisterDate());
+        dto.setPublicIdProfileImg(updatedUser.getPublicIdProfileImage());
+        dto.setLinkProfileImg(updatedUser.getLinkProfileImg());
+
+        return ResponseEntity.ok(dto);
 
     }
 }

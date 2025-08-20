@@ -13,14 +13,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService extends BaseService<User> {
 
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final CloudinaryService cloudinaryService;
 
     private final ImageMapper imageMapper;
     private final PasswordEncoder passwordEncoder;
@@ -28,12 +31,14 @@ public class UserService extends BaseService<User> {
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        ImageRepository imageRepository,
+                       CloudinaryService cloudinaryService,
                        ImageMapper imageMapper){
         super((baseRepository));
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.imageRepository = imageRepository;
         this.imageMapper = imageMapper;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public User authenticateByEmail(String email, String password) {
@@ -67,5 +72,25 @@ public class UserService extends BaseService<User> {
 
         return imageRepository.findByUserId(userId, pageable)
                 .map(imageMapper::toImagePageDTO);
+    }
+
+    public User updateProfilePhoto(User user, MultipartFile file){
+        Map uploadResult;
+
+        if (user.getPublicIdProfileImage() != null){
+            //actualizar imagen existente
+            uploadResult = cloudinaryService.updateImage(user.getPublicIdProfileImage(), file);
+        }else{
+            //subir nueva imagen
+            uploadResult = cloudinaryService.uploadImage(file);
+        }
+
+        String publicId = (String) uploadResult.get("public_id");
+        String url = (String) uploadResult.get("secure_url");
+
+        user.setPublicIdProfileImage(publicId);
+        user.setLinkProfileImg(url);
+
+        return userRepository.save(user);
     }
 }

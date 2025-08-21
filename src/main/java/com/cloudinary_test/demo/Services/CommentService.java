@@ -3,6 +3,7 @@ package com.cloudinary_test.demo.Services;
 import com.cloudinary_test.demo.DTOs.CommentPostRequest;
 import com.cloudinary_test.demo.DTOs.CommentDTOResponse;
 import com.cloudinary_test.demo.Entities.Comment;
+import com.cloudinary_test.demo.Entities.Enums.Privileges;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Repositories.CommentRepository;
@@ -12,6 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,7 +37,7 @@ public class CommentService extends BaseService<Comment> {
 
 
     @Transactional
-    public Comment saveComment(CommentPostRequest request, User user){
+    public CommentDTOResponse saveComment(CommentPostRequest request, User user){
         Comment comment = new Comment();
 
         comment.setContent(request.getContent());
@@ -47,8 +49,15 @@ public class CommentService extends BaseService<Comment> {
 
         comment.setUser(user);
         comment.setImage(image);
-
-        return commentRepository.save(comment);
+        Comment newComment = commentRepository.save(comment);
+        CommentDTOResponse response = new CommentDTOResponse(
+                newComment.getId(),
+                newComment.getContent(),
+                newComment.getUser().getId(),
+                newComment.getUser().getUsername(),
+                newComment.getDate()
+        );
+        return response;
     }
 
     public List<CommentDTOResponse> getCommentsByImageId(Long imageId) {
@@ -66,5 +75,16 @@ public class CommentService extends BaseService<Comment> {
                         comment.getDate()
                 ))
                 .toList();
+    }
+
+    public void deleteComment (Long id, User user){
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commentario no encontrado"));
+        //Solo el autor o el Admin lo pueden borrar
+        if (comment.getUser().getId() == user.getId() || user.getPrivileges() == Privileges.ADMIN){
+            commentRepository.deleteById(id);
+        }else{
+            throw new RuntimeException("No tienes permiso para borrar este comentario");
+        }
     }
 }

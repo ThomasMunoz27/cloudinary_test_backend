@@ -10,6 +10,7 @@ import com.cloudinary_test.demo.Services.CommentService;
 import com.cloudinary_test.demo.Utils.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -66,11 +67,11 @@ public class CommentController extends BaseController<Comment> {
 
 
     @PostMapping("/post")
-    public ResponseEntity<Comment> postComment(@RequestBody CommentPostRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<CommentDTOResponse> postComment(@RequestBody CommentPostRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
 
         User user = userDetails.getUser();
 
-        Comment newComment = ((CommentService)baseService).saveComment(request, user);
+        CommentDTOResponse newComment = ((CommentService)baseService).saveComment(request, user);
         return ResponseEntity.ok(newComment);
     }
 
@@ -78,7 +79,20 @@ public class CommentController extends BaseController<Comment> {
     public ResponseEntity<List<CommentDTOResponse>> getCommentsByImageId(@PathVariable Long imageId){
         System.out.println("Buscando comentarios para imagen ID: " + imageId);
 
-        List<CommentDTOResponse> comentDTOs = commentService.getCommentsByImageId(imageId);
-        return ResponseEntity.ok(comentDTOs);
+        return ResponseEntity.ok(commentService.getCommentsByImageId(imageId));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUserComment (@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
+        User user = userDetails.getUser();
+        try {
+            commentService.deleteComment(id, user);
+            return ResponseEntity.noContent().build(); // 204
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("Comment not found")) {
+                return ResponseEntity.notFound().build(); // 404
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
+        }
     }
 }

@@ -63,6 +63,7 @@ public class UserService extends BaseService<User> {
         dto.setRegisterDate(user.getRegisterDate());
         dto.setPublicIdProfileImg(user.getPublicIdProfileImage());
         dto.setLinkProfileImg(user.getLinkProfileImg());
+        dto.setCantImagesPublished(user.getImagesPublished().size());
 
         return dto;
     }

@@ -14,4 +14,5 @@ public class UserDTOResponse {
     private LocalDateTime registerDate;
     private String publicIdProfileImg;
     private String linkProfileImg;
+    private Integer cantImagesPublished;
 }

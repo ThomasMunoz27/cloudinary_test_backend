@@ -1,6 +1,5 @@
 package com.cloudinary_test.demo.Services;
 
-import com.cloudinary_test.demo.DTOs.ImageForUserDTO;
 import com.cloudinary_test.demo.DTOs.ImagePageDTO;
 import com.cloudinary_test.demo.DTOs.UserDTOResponse;
 import com.cloudinary_test.demo.Entities.User;

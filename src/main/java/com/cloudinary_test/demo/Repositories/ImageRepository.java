@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ImageRepository extends BaseRepository<Image, Long> {
     @Query("""
             SELECT DISTINCT i FROM Image i
@@ -16,4 +18,7 @@ public interface ImageRepository extends BaseRepository<Image, Long> {
 
     @Query("SELECT i FROM Image i WHERE i.userId.id = :userId")
     Page<Image> findByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query("SELECT i FROM Image i WHERE i.userId.id = :userId")
+    List<Image> findAllByUserId(@Param("userId") Long userId);
 }

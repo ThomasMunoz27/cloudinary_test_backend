@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.Controllers;
 
+import com.cloudinary_test.demo.DTOs.ImageForUserDTO;
 import com.cloudinary_test.demo.DTOs.ImagePageDTO;
 import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
 import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
@@ -102,5 +103,12 @@ public class ImageController extends BaseController<Image>{
         }else {
             return imageService.findPagedAndFiltered(categoryId, pageable); //con filtrado
         }
+    }
+
+    @GetMapping("/user/{userId}/stats")
+    public ResponseEntity<List<ImageForUserDTO>> getUserImagesStats(@PathVariable Long userId){
+        List<ImageForUserDTO> images = imageService.getImagesForUserStats(userId);
+
+        return ResponseEntity.ok(images);
     }
 }

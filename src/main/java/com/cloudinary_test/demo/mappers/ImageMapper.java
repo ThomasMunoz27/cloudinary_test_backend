@@ -13,17 +13,10 @@ public class ImageMapper {
         ImageForUserDTO imgDto = new ImageForUserDTO();
 
         imgDto.setId(image.getId());
-        imgDto.setName(image.getName());
-        imgDto.setLink(image.getLink());
-        imgDto.setPublicId(image.getPublicId());
-        imgDto.setDescription(image.getDescription());
         imgDto.setLikes(image.getLikes());
         imgDto.setDislike(image.getDislike());
         imgDto.setDateUpload(image.getDateUploaded());
 
-        if(image.getCategories() != null){
-            imgDto.setCategories(image.getCategories());
-        }
 
         return imgDto;
     }

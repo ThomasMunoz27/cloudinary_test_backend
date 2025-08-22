@@ -1,10 +1,8 @@
 package com.cloudinary_test.demo.Controllers;
 
 import com.cloudinary_test.demo.DTOs.ChangeUserProfileDTO;
-import com.cloudinary_test.demo.DTOs.ImageForUserDTO;
 import com.cloudinary_test.demo.DTOs.ImagePageDTO;
 import com.cloudinary_test.demo.DTOs.UserDTOResponse;
-import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Services.UserService;
 import com.cloudinary_test.demo.Utils.CustomUserDetails;

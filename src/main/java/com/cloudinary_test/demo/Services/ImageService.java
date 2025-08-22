@@ -1,15 +1,10 @@
 package com.cloudinary_test.demo.Services;
 
-import com.cloudinary_test.demo.DTOs.ImagePageDTO;
-import com.cloudinary_test.demo.DTOs.ImageUpdateRequest;
-import com.cloudinary_test.demo.DTOs.ImageUploadRequest;
-import com.cloudinary_test.demo.DTOs.UserForImageDTO;
+import com.cloudinary_test.demo.DTOs.*;
 import com.cloudinary_test.demo.Entities.Category;
 import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
-import com.cloudinary_test.demo.Repositories.CategoryRepository;
-import com.cloudinary_test.demo.Repositories.ImageRepository;
-import com.cloudinary_test.demo.Repositories.UserRepository;
+import com.cloudinary_test.demo.Repositories.*;
 import com.cloudinary_test.demo.mappers.ImageMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -31,19 +26,25 @@ public class ImageService extends BaseService<Image> {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ImageMapper imageMapper;
+    private final ReactionRespository reactionRespository;
+    private final CommentRepository commentRepository;
 
     public ImageService(JpaRepository<Image, Long> baseRepository,
                         ImageRepository imageRepository,
                         CloudinaryService cloudinaryService,
                         UserRepository userRepository,
                         CategoryRepository categoryRepository,
-                        ImageMapper imageMapper){
+                        ImageMapper imageMapper,
+                        ReactionRespository reactionRespository,
+                        CommentRepository commentRepository){
         super(baseRepository);
         this.imageRepository = imageRepository;
         this.cloudinaryService = cloudinaryService;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.imageMapper = imageMapper;
+        this.reactionRespository = reactionRespository;
+        this.commentRepository = commentRepository;
     }
     @Transactional
     public Image uploadImage(ImageUploadRequest request, Long userId){
@@ -121,6 +122,10 @@ public class ImageService extends BaseService<Image> {
         if (image.getPublicId() != null){
             cloudinaryService.deleteImage(image.getPublicId());
         }
+        commentRepository.deleteByImageId(id);
+
+        reactionRespository.deleteByImageId(id);
+
         imageRepository.deleteById(id);
     }
 
@@ -165,5 +170,12 @@ public class ImageService extends BaseService<Image> {
 
             return imgDto;
         });
+    }
+
+    public List<ImageForUserDTO> getImagesForUserStats(Long userId){
+        return imageRepository.findAllByUserId(userId)
+                .stream()
+                .map(imageMapper::toImageForUserDTO)
+                .toList();
     }
 }

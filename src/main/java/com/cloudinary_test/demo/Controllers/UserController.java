@@ -8,6 +8,7 @@ import com.cloudinary_test.demo.Entities.Image;
 import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Services.UserService;
 import com.cloudinary_test.demo.Utils.CustomUserDetails;
+import com.cloudinary_test.demo.mappers.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,11 @@ import java.util.List;
 public class UserController extends BaseController<User>{
 
     private final UserService userService;
-    public UserController(UserService userService){
+    private final UserMapper userMapper;
+    public UserController(UserService userService, UserMapper userMapper){
         super(userService);
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -64,6 +67,17 @@ public class UserController extends BaseController<User>{
     @Operation(summary = "Eliminar usuario")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
+    }
+
+
+    //Get all DTORespone
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDTOResponse>> getAllUsersDto(){
+        List<UserDTOResponse> dtoList = super.getAll().getBody()
+                .stream()
+                .map(userMapper::toUserDTOResponse)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     //Endpoint para el perfil del usuario proporcionado

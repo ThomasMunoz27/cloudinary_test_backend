@@ -55,6 +55,7 @@ public class CommentService extends BaseService<Comment> {
                 newComment.getContent(),
                 newComment.getUser().getId(),
                 newComment.getUser().getUsername(),
+                newComment.getUser().getLinkProfileImg(),
                 newComment.getDate()
         );
         return response;
@@ -72,6 +73,7 @@ public class CommentService extends BaseService<Comment> {
                         comment.getContent(),
                         comment.getUser().getId(),
                         comment.getUser().getUsername(),
+                        comment.getUser().getLinkProfileImg(),
                         comment.getDate()
                 ))
                 .toList();

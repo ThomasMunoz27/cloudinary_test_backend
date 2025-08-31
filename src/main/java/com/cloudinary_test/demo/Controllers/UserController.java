@@ -124,12 +124,9 @@ public class UserController extends BaseController<User>{
         User updatedUser = userService.updateProfilePhoto(userDetails.getUser(), imageRequest.getFile());
 
         // Convertir a DTO de respuesta
-        UserDTOResponse dto = new UserDTOResponse();
-        dto.setId(updatedUser.getId());
-        dto.setUsername(updatedUser.getUsername());
-        dto.setRegisterDate(updatedUser.getRegisterDate());
-        dto.setPublicIdProfileImg(updatedUser.getPublicIdProfileImage());
-        dto.setLinkProfileImg(updatedUser.getLinkProfileImg());
+
+        UserDTOResponse dto = userMapper.toUserDTOResponse(updatedUser);
+
 
         return ResponseEntity.ok(dto);
 

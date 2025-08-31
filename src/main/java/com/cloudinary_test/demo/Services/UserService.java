@@ -6,6 +6,7 @@ import com.cloudinary_test.demo.Entities.User;
 import com.cloudinary_test.demo.Repositories.ImageRepository;
 import com.cloudinary_test.demo.Repositories.UserRepository;
 import com.cloudinary_test.demo.mappers.ImageMapper;
+import com.cloudinary_test.demo.mappers.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class UserService extends BaseService<User> {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final CloudinaryService cloudinaryService;
-
+    private final UserMapper userMapper;
     private final ImageMapper imageMapper;
     private final PasswordEncoder passwordEncoder;
     public UserService(JpaRepository<User, Long> baseRepository,
@@ -31,13 +32,15 @@ public class UserService extends BaseService<User> {
                        PasswordEncoder passwordEncoder,
                        ImageRepository imageRepository,
                        CloudinaryService cloudinaryService,
-                       ImageMapper imageMapper){
+                       ImageMapper imageMapper,
+                       UserMapper userMapper){
         super((baseRepository));
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.imageRepository = imageRepository;
         this.imageMapper = imageMapper;
         this.cloudinaryService = cloudinaryService;
+        this.userMapper= userMapper;
     }
 
     public User authenticateByEmail(String email, String password) {
@@ -56,15 +59,7 @@ public class UserService extends BaseService<User> {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado"));
 
-        UserDTOResponse dto = new UserDTOResponse();
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setRegisterDate(user.getRegisterDate());
-        dto.setPublicIdProfileImg(user.getPublicIdProfileImage());
-        dto.setLinkProfileImg(user.getLinkProfileImg());
-        dto.setCantImagesPublished(user.getImagesPublished().size());
-
-        return dto;
+        return userMapper.toUserDTOResponse(user);
     }
 
 

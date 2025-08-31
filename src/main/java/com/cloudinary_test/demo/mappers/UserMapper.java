@@ -15,7 +15,8 @@ public class UserMapper {
         userDto.setRegisterDate(user.getRegisterDate());
         userDto.setPublicIdProfileImg(user.getPublicIdProfileImage());
         userDto.setLinkProfileImg(user.getLinkProfileImg());
-        userDto.setCantImagesPublished(userDto.getCantImagesPublished());
+        userDto.setCantImagesPublished(user.getImagesPublished().size());
+        userDto.setPrivileges(user.getPrivileges());
 
         return userDto;
     }

@@ -1,5 +1,6 @@
 package com.cloudinary_test.demo.DTOs;
 
+import com.cloudinary_test.demo.Entities.Enums.Privileges;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -15,4 +16,5 @@ public class UserDTOResponse {
     private String publicIdProfileImg;
     private String linkProfileImg;
     private Integer cantImagesPublished;
+    private Privileges privileges;
 }
